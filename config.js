@@ -15,7 +15,7 @@ JANGAN DI HAPUS SU HARGAI CREDITS DIKIT
 */
 
 const config = {
-  token: '8309704104:AAFn1Sn9MB2KCaMQvgmeG525A8S1a7LuEZU',
+  token: '8009363056:AAGgv6unjMAidwiusQrnoe0Lcy4db_ax5Cs',
   adminId: '1835508209', 
   pp: 'https://files.catbox.moe/ypc1w9.jpg',
 urladmin: 'https://t.me/SanXDv',
