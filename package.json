@@ -1,0 +1,15 @@
+{
+  "name": "telegram-installer-bot",
+  "version": "1.0.0",
+  "description": "Bot untuk install panel dengan payment Duitku",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "node-telegram-bot-api": "^0.66.0",
+    "qrcode": "^1.5.3",
+    "ssh2": "^1.15.0"
+  }
+}
