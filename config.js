@@ -19,7 +19,7 @@ module.exports = {
   
   // --- Pengaturan Harga & Durasi ---
   // Harga untuk membeli akses (dalam Rupiah)
-  accessPrice: 7000, // <--- GANTI INI (contoh: 7000 untuk Rp7.000)
+  accessPrice: 1000, // <--- GANTI INI (contoh: 7000 untuk Rp7.000)
   
   // [BARU] Durasi masa aktif akses dalam HARI
   accessDurationDays: 1, // <--- GANTI INI (sesuai contoh Anda, 1 hari)
