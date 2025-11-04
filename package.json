@@ -1,0 +1,19 @@
+{
+  "name": "ANTI RUSUH",
+  "version": "1.0.0",
+  "description": "Telegram bot menggunakan Node.js dengan fitur premium dan struktur modular",
+  "main": "start.js",
+  "scripts": {
+    "start": "node start.js"
+  },
+  "author": "LightSecret",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "chalk": "^4.1.2",
+    "fs-extra": "^11.2.0",
+    "node-telegram-bot-api": "^0.61.0",
+    "qrcode": "^1.5.4",
+    "ssh2": "^1.17.0"
+  }
+}
