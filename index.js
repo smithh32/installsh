@@ -523,7 +523,7 @@ bot.on("callback_query", async (callbackQuery) => {
 ╰────────────⧽
 
 ╭──✧ <b>ᴏᴡɴᴇʀ ᴘʀɪᴠᴀᴛᴇ</b> ✧
-│ ⪼ /uninstallprotectall < ipvps|pwvps >
+│ ⪼ /uninstallprotectall
 ╰────────────
 </blockquote>`;
 
