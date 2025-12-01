@@ -1038,7 +1038,7 @@ function isValidIP(ip) {
 }
 global.subdomain = { 
     "cjdw.me": {
-        zone: "ea4a4028d893149fda5bd28b270de74d",
+        zone: "75bcb44b99f8828c067cc351c41519b5",
         apitoken: "0Ra07Oo6vu9JnBtIMnaKiTBniJJcFSSOxmu-DcCw"
     }
 };
