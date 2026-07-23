@@ -1037,9 +1037,9 @@ function isValidIP(ip) {
   return ipRegex.test(ip);
 }
 global.subdomain = { 
-    "cjdw.me": {
-        zone: "75bcb44b99f8828c067cc351c41519b5",
-        apitoken: "0Ra07Oo6vu9JnBtIMnaKiTBniJJcFSSOxmu-DcCw"
+    "stunnelv4.biz.id": {
+        zone: "a6e4b41f2ed82ad3f34ad2d039b54e33",
+        apitoken: "cfut_vZTyGciWCnUwHkXt6qUW4kgZxoqxhGu32tihYZU2a0670c7d"
     }
 };
 
@@ -1156,33 +1156,7 @@ bot.on("callback_query", async (callbackQuery) => {
 ╭──✧ <b>ᴛᴏᴏʟꜱ ᴍᴇɴᴜ</b> ✧
 │ ⪼ /subdo
 │ ⪼ /listsubdo
-│ ⪼ /subdofinder -- ᴍᴀꜱᴜᴋᴀɴ ᴅᴏᴍᴀɪɴ
-│ ⪼ /hd -- ʀᴇᴘʟʏ ɢᴀᴍʙᴀʀ
-│ ⪼ /imgtotext -- ʀᴇᴘʟʏ ɢᴀᴍʙᴀʀ
-╰────────────⧽
-╭──✧ <b>ᴄᴇᴋ ɴɪᴄᴋɴᴀᴍᴇ ɢᴀᴍᴇ</b> ✧
-│ ⪼ /cekml -- [ɪᴅ] [ᴢᴏɴᴇ]
-│ ⪼ /mcgg -- [ɪᴅ] [ᴢᴏɴᴇ]
-│ ⪼ /cekff -- [ɪᴅ]
-│ ⪼ /gi -- [ɪᴅ]
-╰────────────⧽
-╭──✧ <b>ᴅᴏᴡɴʟᴏᴀᴅᴇʀ ᴍᴇɴᴜ</b> ✧
-│ ⪼ /igdw -- ᴜʀʟ ɪɴꜱᴛᴀɢʀᴀᴍ 
-│ ⪼ /tiktok -- ᴜʀʟ ᴛɪᴋᴛᴏᴋ 
-│ ⪼ /searchimg -- ᴋᴀᴛᴀ ᴋᴜɴᴄɪ
-╰────────────⧽
-╭──✧ <b>ᴀɪ ᴍᴇɴᴜ</b> ✧
-│ ⪼ /ai -- ᴄʟᴀᴜᴅᴇ 4.5
-│ ⪼ /aiv2 -- ᴍᴇᴛᴀ ᴀɪ
-╰────────────⧽
-╭──✧ <b>ꜰᴜɴ ᴍᴇɴᴜ</b> ✧
-│ ⪼ /play -- ᴊᴜᴅᴜʟ ʟᴀɢᴜ 
-│ ⪼ /cosplay -- ʀᴀɴᴅᴏᴍ
-│ ⪼ /loli -- ᴘᴀꜱᴛɪ ꜱᴜᴋᴀ 
-│ ⪼ /waifu -- ᴡᴀɪꜰᴜ ᴋᴀᴍᴜ
-│ ⪼ /hentai -- ʜᴀʀᴀᴍ ʙᴏꜱ
-│ ⪼ /brat -- ᴛᴇᴋꜱ
-│ ⪼ /qc -- ʀᴇᴘʟʏ ᴛᴇᴋꜱ
+│ ⪼ /rebuild
 ╰────────────⧽
 </blockquote>`;
 
@@ -5636,6 +5610,234 @@ bot.onText(/^\/uninstallprotectall (.+)$/, async (msg, match) => {
     password: pwvps
   });
  });
+ // ============================================================
+// FITUR REBUILD VPS DENGAN INLINE KEYBOARD (DENGAN AUTO-CHECKER)
+// ============================================================
+const rebuildSessions = {};
+
+bot.onText(/^\/rebuild(?:\s+(.+))?/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const userId = msg.from.id;
+
+    // 1. Cek validasi akses (Khusus Admin/Owner)
+    if (!isAdmin(userId)) {
+        return bot.sendMessage(chatId, '⚠️ *Akses Ditolak!*\nFitur ini khusus Owner / Admin yang terdaftar.', { parse_mode: 'Markdown' });
+    }
+
+    const text = match[1];
+    if (!text || !text.includes("|")) {
+        const errorMsg = `❌ *FORMAT SALAH!*\n\n*Penggunaan:*\n\`/rebuild ipvps|pwvps\`\n\n*Contoh:*\n\`/rebuild 192.168.1.1|pwrahasia\`\n\n✅ _Tested: Digital Ocean, Linode, AWS, Oracle, Vultr, Contabo, Hetzner, dll (KVM)_`;
+        return bot.sendMessage(chatId, errorMsg, { parse_mode: "Markdown" });
+    }
+
+    const [ip, password] = text.split("|").map(i => i.trim());
+
+    // 2. Simpan sesi sementara untuk user ini
+    rebuildSessions[userId] = { ip, password };
+
+    // 3. Tampilkan Menu Pilihan OS (Tombol Inline)
+    const opts = {
+        reply_markup: {
+            inline_keyboard: [
+                [
+                    { text: "Ubuntu 22.04", callback_data: "rb_ubuntu 22.04" },
+                    { text: "Ubuntu 24.04", callback_data: "rb_ubuntu 24.04" }
+                ],
+                [
+                    { text: "Debian 11", callback_data: "rb_debian 11" },
+                    { text: "Debian 12", callback_data: "rb_debian 12" }
+                ],
+                [
+                    { text: "❌ Batalkan Rebuild", callback_data: "rb_cancel" }
+                ]
+            ]
+        },
+        parse_mode: "Markdown"
+    };
+
+    const menuMsg = `🖥️ *REBUILD VPS SYSTEM*\n\n📌 *Target IP:* \`${ip}\`\n\nSilakan pilih OS yang ingin di-install:\n\n✅ _Tested: Digital Ocean, Linode, AWS, Oracle, Vultr, Contabo, Hetzner, dll (KVM)_`;
+    bot.sendMessage(chatId, menuMsg, opts);
+});
+
+// Listener untuk klik tombol Rebuild
+bot.on("callback_query", async (callbackQuery) => {
+    const msg = callbackQuery.message;
+    const chatId = msg.chat.id;
+    const userId = callbackQuery.from.id;
+    const data = callbackQuery.data;
+
+    // Deteksi jika yang diklik adalah tombol dari menu rebuild
+    if (data && data.startsWith("rb_")) {
+        await bot.answerCallbackQuery(callbackQuery.id);
+
+        if (data === "rb_cancel") {
+            delete rebuildSessions[userId]; // Hapus sesi
+            return bot.editMessageText("❌ *Proses Rebuild Dibatalkan.*", {
+                chat_id: chatId,
+                message_id: msg.message_id,
+                parse_mode: "Markdown"
+            });
+        }
+
+        // Ambil data IP dan Password dari sesi
+        const session = rebuildSessions[userId];
+        if (!session) {
+            return bot.sendMessage(chatId, "⚠️ Sesi rebuild kadaluarsa atau tidak ditemukan. Silakan ulangi ketik /rebuild.");
+        }
+
+        const osChoice = data.replace("rb_", ""); // Mendapatkan string OS
+        const { ip, password } = session;
+        
+        // Hapus sesi agar tidak bisa diklik dua kali
+        delete rebuildSessions[userId];
+
+        // Generate password baru acak 
+        const newPassword = generateRandomPassword(12);
+
+        // Edit pesan menu jadi pesan loading
+        await bot.editMessageText(`⏳ *Proses Rebuild Dimulai...*\n\nTarget IP: \`${ip}\`\nOS Pilihan: \`${osChoice}\`\n\n_Mengeksekusi script bash. VPS akan otomatis reboot._`, {
+            chat_id: chatId,
+            message_id: msg.message_id,
+            parse_mode: "Markdown"
+        });
+
+        // PESAN BARU DENGAN PANDUAN (SESUAI REQUEST)
+        const successMsg = `
+✅ *PROSES REBUILD SEDANG BERJALAN* ✅
+
+📌 *IP VPS:* \`${ip}\`
+💻 *OS Baru:* \`${osChoice}\`
+🔑 *Password Baru:* \`${newPassword}\`
+
+🛠️ *PANDUAN SELANJUTNYA (WAJIB DIBACA):*
+1️⃣ Bot akan memantau VPS. **Tunggu hingga ada notifikasi "REBUILD SELESAI"** dari bot ini (Biasanya butuh 3-10 menit).
+2️⃣ Jika kamu login sebelum ada notif dan melihat tulisan **Reinstalling...** (seperti gambar di atas), **JANGAN KETIK APAPUN!** Biarkan VPS merestart sendiri.
+3️⃣ Setelah selesai, login dan ketik perintah \`passwd root\` untuk mengganti password agar lebih aman.
+`;
+
+        try {
+            const path = require('path');
+            const imagePath = path.join(__dirname, 'rebuild.jpg');
+            await bot.sendPhoto(chatId, imagePath, { 
+                caption: successMsg, 
+                parse_mode: "Markdown" 
+            });
+        } catch (err) {
+            console.log("Gambar rebuild tidak ditemukan, mengirim teks saja.");
+            await bot.sendMessage(chatId, successMsg, { parse_mode: "Markdown" });
+        }
+
+        // FUNGSI AUTO CHECKER (Pengecek Login VPS) YANG LEBIH PINTAR
+        function startRebuildChecker(checkIp, checkPw, sendChatId, checkOs) {
+            bot.sendMessage(sendChatId, `⏳ _Radar Bot sedang memantau VPS_ \`${checkIp}\`_...\nBot akan memberitahu otomatis jika VPS sudah siap digunakan._`, { parse_mode: "Markdown" });
+
+            // Tunggu 3 menit awal
+            setTimeout(() => {
+                let attempts = 0;
+                // Kasih waktu lebih lama dikit (30 x 30 detik = 15 menit pantauan)
+                const maxAttempts = 30; 
+
+                const checkInterval = setInterval(() => {
+                    attempts++;
+                    const checkConn = new Client();
+
+                    checkConn.on('ready', () => {
+                        // Konek sukses, interogasi dulu VPS-nya
+                        checkConn.exec('cat /etc/motd 2>/dev/null; ls /reinstall.log 2>/dev/null', (err, stream) => {
+                            if (err) {
+                                checkConn.end();
+                                return;
+                            }
+                            
+                            let output = '';
+                            stream.on('data', (data) => {
+                                output += data.toString();
+                            }).on('close', () => {
+                                // Cek apakah ada tanda-tanda masih reinstall
+                                if (output.includes('Reinstalling') || output.includes('/reinstall.log')) {
+                                    console.log(`[Radar] ${checkIp} masih dalam fase Reinstalling...`);
+                                    checkConn.end();
+                                } else {
+                                    // Selesai!
+                                    clearInterval(checkInterval);
+                                    checkConn.end();
+
+                                    const doneMsg = `
+🎉 *REBUILD VPS SELESAI!* 🎉
+
+VPS dengan IP \`${checkIp}\` telah berhasil di-rebuild ke \`${checkOs}\` dan sekarang **SUDAH ONLINE & SIAP DIGUNAKAN**!
+
+🔑 *Password Login:* \`${checkPw}\`
+
+⚠️ *Langkah Terakhir:* Segera login ke VPS menggunakan Termius/JuiceSSH. Setelah berhasil masuk, ketik perintah \`passwd root\` lalu masukkan password baru kamu 2x agar VPS lebih aman dari peretas.
+`;
+                                    bot.sendMessage(sendChatId, doneMsg, { parse_mode: "Markdown" });
+                                }
+                            });
+                        });
+
+                    }).on('error', (err) => {
+                        if (attempts >= maxAttempts) {
+                            clearInterval(checkInterval);
+                            bot.sendMessage(sendChatId, `⚠️ *Info Rebuild:* Waktu pemantauan otomatis untuk VPS \`${checkIp}\` telah habis (15 menit). Silakan coba login secara manual untuk mengecek apakah rebuild sudah selesai.`, { parse_mode: "Markdown" });
+                        }
+                    });
+
+                    // Coba konek pakai password BARU
+                    checkConn.connect({
+                        host: checkIp,
+                        port: 22,
+                        username: 'root',
+                        password: checkPw,
+                        readyTimeout: 5000
+                    });
+                }, 30000); // Interval cek setiap 30 detik
+
+            }, 180000); // Delay 3 menit
+        }
+
+        // Mulai koneksi SSH untuk mengeksekusi bash script (pakai password LAMA)
+        const connSettings = {
+            host: ip,
+            port: 22,
+            username: 'root',
+            password: password,
+            readyTimeout: 20000
+        };
+
+        const conn = new Client();
+        const command = `curl -O https://raw.githubusercontent.com/victor3232/reinstall/main/reinstall.sh && bash reinstall.sh ${osChoice} --password "${newPassword}" && reboot`;
+
+        conn.on('ready', () => {
+            conn.exec(command, (err, stream) => {
+                if (err) {
+                    bot.sendMessage(chatId, `❌ Gagal eksekusi script di VPS: ${err.message}`);
+                    conn.end();
+                    return;
+                }
+
+                stream.on('close', () => {
+                    // Koneksi terputus wajar karena command diakhiri 'reboot'
+                    conn.end();
+                    // JALANKAN AUTO-CHECKER SETELAH VPS MATI
+                    startRebuildChecker(ip, newPassword, chatId, osChoice);
+                }).on('data', (data) => {
+                    console.log('Rebuild STDOUT: ' + data.toString());
+                }).stderr.on('data', (data) => {
+                    console.log('Rebuild STDERR: ' + data.toString());
+                });
+            });
+        }).on('error', (err) => {
+            bot.sendMessage(chatId, `❌ Gagal konek ke VPS (${ip}).\nKatasandi salah atau VPS tidak merespons.\n\nError: \`${err.message}\``, { parse_mode: "Markdown" });
+        });
+
+        conn.on('end', () => {
+            console.log(`SSH Connection to ${ip} ended (expected due to reboot).`);
+        });
+
+        conn.connect(connSettings);
+    }
+});
 }
 
 module.exports = { setBotInstance };
