@@ -23,6 +23,6 @@ module.exports = {
   "DUITKU_MERCHANT_CODE": "D20182",
   "DUITKU_API_KEY": "caa4719cecc7354ad8671daf42a44d82",
   "ADMIN_PRICE": 1000,
-  "token": "8291188190:AAGZyhOwxCwra5hZzrpzOWkmmfqJrt148Nc",
+  "token": "8918949348:AAG65ubdqNMeUCkcu6c6_MjNuPm5YFwQ_tE",
   "photoURL": "https://qu.ax/tlqOm.webp"
 };
